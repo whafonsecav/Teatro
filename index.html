@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Arte &amp; Estética · SoundVision AI</title>
+  <meta name="description" content="Arte y Estética — Politecnico Gran Colombiano. IA generativa que transforma imágenes en composiciones musicales instrumentales únicas.">
+  <meta name="theme-color" content="#7C3AED">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ─── Fondo animado ─────────────────────────────────────── -->
+<div class="bg-layer" aria-hidden="true">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     VISTA ESCRITORIO
+════════════════════════════════════════════════════════════ -->
+<div id="app-desktop">
+
+  <!-- Top Bar -->
+  <header class="topbar">
+    <div class="logo">
+      <span class="logo-icon" aria-hidden="true">◈</span>
+      <span>Arte &amp; Estética <em>· SoundVision</em></span>
+    </div>
+    <div class="topbar-right">
+      <!-- Historial dropdown -->
+      <div class="hdd-wrap" id="hdd-wrap">
+        <button class="hdd-btn" id="hdd-btn" aria-haspopup="listbox" aria-expanded="false">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><line x1="12" y1="7" x2="12" y2="13"/><line x1="12" y1="13" x2="15" y2="15"/></svg>
+          Historial
+          <span class="hdd-count" id="hdd-count">0</span>
+          <svg class="hdd-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="hdd-menu hidden" id="hdd-menu" role="listbox" aria-label="Historial de creaciones">
+          <!-- generado por JS -->
+        </div>
+      </div>
+      <!-- PIN badge -->
+      <div class="pairing-badge" id="pairing-badge" title="Usa este PIN en tu celular para conectarte">
+        <span class="badge-dot" id="badge-dot" aria-hidden="true"></span>
+        <span>PIN:&nbsp;<strong id="pin-display">——————</strong></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Escenario principal -->
+  <main class="stage" id="stage">
+
+    <!-- ══ ESTADO: INICIO ══════════════════════════════════ -->
+    <section id="s-idle" data-state="idle" aria-label="Pantalla de inicio">
+      <div class="hero-content">
+        <p class="hero-eyebrow">Inteligencia Artificial Generativa</p>
+        <h1 class="hero-title">
+          Tu imagen.<br>
+          <span class="gradient-text">Su música.</span>
+        </h1>
+        <p class="hero-sub">
+          Sube una fotografía y nuestra IA creará una composición instrumental
+          única que captura su esencia visual y emocional.
+        </p>
+        <button class="btn-primary" id="btn-upload-idle" aria-label="Abrir explorador de imágenes">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          Cargar imagen
+        </button>
+      </div>
+      <div class="hero-visual" aria-hidden="true" id="idle-wave-container">
+        <div class="idle-wave" id="idle-wave"></div>
+      </div>
+    </section>
+
+    <!-- ══ ESTADO: PROCESAMIENTO ════════════════════════════ -->
+    <section id="s-processing" data-state="processing" class="hidden" aria-label="Procesando imagen" aria-live="polite">
+      <div class="process-wrap">
+        <div class="process-img-wrap">
+          <img id="process-img" src="" alt="Imagen siendo procesada por la IA">
+        </div>
+        <div class="process-info">
+          <div class="ai-chip">
+            <span class="ai-chip-dot" aria-hidden="true"></span>
+            IA Procesando
+          </div>
+          <h2 class="process-title">Analizando composición visual</h2>
+          <div class="process-steps" id="process-steps" role="list"></div>
+          <div class="progress-track" role="progressbar" aria-label="Progreso" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ ESTADO: REPRODUCTOR ══════════════════════════════ -->
+    <section id="s-player" data-state="player" class="hidden" aria-label="Reproductor de música">
+
+      <div class="player-wrapper" id="player-wrapper">
+
+        <!-- Imagen adaptativa: ocupa todo el espacio sin recortarse -->
+        <div class="artwork-section" id="artwork-section">
+          <div class="artwork-glow" id="artwork-glow" aria-hidden="true"></div>
+          <img id="artwork-img" src="" alt="Portada del álbum" class="artwork-img">
+
+          <!-- Overlay de autoplay (visible solo cuando el navegador bloquea el audio) -->
+          <div class="autoplay-overlay hidden" id="autoplay-overlay"
+               role="button" tabindex="0" aria-label="Toca para reproducir la música">
+            <div class="autoplay-card">
+              <span class="autoplay-icon">▶</span>
+              <span class="autoplay-text">Toca para reproducir</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Columna de controles -->
+        <div class="player-card-col">
+
+          <!-- Tarjeta glass de controles -->
+          <div class="player-card">
+            <p class="track-badge">✦ Arte &amp; Estética · SoundVision</p>
+            <h2 class="track-title" id="track-title">—</h2>
+            <p class="track-sub">Composición Instrumental Generativa</p>
+
+            <canvas id="waveform" aria-hidden="true"></canvas>
+
+            <div class="seek-row">
+              <span id="time-current">0:00</span>
+              <div class="seek-track" id="seek-track" role="slider"
+                   aria-label="Progreso" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                <div class="seek-fill" id="seek-fill"></div>
+                <div class="seek-thumb" id="seek-thumb"></div>
+              </div>
+              <span id="time-total">0:00</span>
+            </div>
+
+            <!-- Transport: ⏪10 | ▶ | ⏩10 -->
+            <div class="transport-row">
+              <button class="ctrl-btn-skip" id="btn-back10" aria-label="Retroceder 10 segundos">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.5 8V4L6 9l6.5 5v-4A5.5 5.5 0 1 1 7 15.5"/></svg>
+                <span class="skip-label">10</span>
+              </button>
+              <button class="ctrl-btn-play" id="btn-play" aria-label="Reproducir / Pausar">
+                <span id="play-icon">▶</span>
+              </button>
+              <button class="ctrl-btn-skip" id="btn-fwd10" aria-label="Adelantar 10 segundos">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11.5 8V4L18 9l-6.5 5v-4A5.5 5.5 0 1 0 17 15.5"/></svg>
+                <span class="skip-label">10</span>
+              </button>
+            </div>
+
+            <!-- Volumen -->
+            <div class="vol-row">
+              <svg class="vol-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19"/></svg>
+              <input type="range" id="vol-slider" min="0" max="1" step="0.02" value="1" aria-label="Volumen">
+              <svg class="vol-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+            </div>
+          </div>
+
+          <!-- Botón Nueva Creación -->
+          <button class="btn-new-creation" id="btn-add" aria-label="Cargar otra imagen y generar nueva composición">
+            <span class="btn-new-icon" aria-hidden="true">✨</span>
+            <span class="btn-new-text">Nueva Creación</span>
+          </button>
+
+        </div><!-- /player-card-col -->
+
+      </div><!-- /player-wrapper -->
+
+    </section>
+
+  </main>
+</div><!-- /app-desktop -->
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     VISTA MÓVIL — Control Remoto Completo
+════════════════════════════════════════════════════════════ -->
+<div id="app-mobile" class="hidden">
+
+  <!-- Pantalla de emparejamiento -->
+  <div id="m-pairing">
+    <div class="m-logo">◈ Arte &amp; Estética <em>· SoundVision</em></div>
+    <div class="m-pair-card">
+      <h1 class="m-pair-title">🎛️ Control Remoto</h1>
+      <p class="m-pair-sub">
+        Ingresa el PIN de 6 dígitos que aparece en la esquina superior derecha
+        de la pantalla principal.
+      </p>
+      <input
+        type="number"
+        id="m-pin-input"
+        class="m-pin-input"
+        placeholder="000000"
+        maxlength="6"
+        inputmode="numeric"
+        autocomplete="off"
+        aria-label="PIN de conexión de 6 dígitos"
+      >
+      <button class="m-connect-btn" id="m-connect-btn">Conectar</button>
+      <p class="m-error" id="m-error" role="alert" aria-live="assertive"></p>
+
+      <div class="m-divider"><span>o</span></div>
+
+      <button class="m-standalone-btn" id="m-standalone-btn" aria-label="Usar la aplicación directamente en este dispositivo sin necesidad de conectarse a un computador">
+        <span>📱</span> Usar sin conexión
+        <small>Reproduce en este dispositivo</small>
+      </button>
+    </div>
+  </div>
+
+  <!-- Panel de control (visible tras emparejarse) -->
+  <div id="m-control" class="hidden">
+
+    <div class="m-ctrl-header">
+      <div class="m-ctrl-status">
+        <span class="m-ctrl-status-dot" aria-hidden="true"></span>
+        Conectado
+      </div>
+      <button class="m-disconnect-btn" id="m-disconnect-btn">Desconectar</button>
+    </div>
+
+    <!-- ── PANEL PRINCIPAL: Reproductor ── -->
+    <div id="m-panel-player">
+
+      <!-- Info de canción actual -->
+      <div class="m-now-playing">
+        <img class="m-art-thumb" id="m-art-thumb" src="" alt="Portada de la canción actual">
+        <div class="m-track-info">
+          <p class="m-track-label">Reproduciendo</p>
+          <p class="m-track-name" id="m-track-name">—</p>
+          <p class="m-track-state" id="m-track-state">En espera…</p>
+        </div>
+        <button class="m-restart-btn" id="m-btn-restart" aria-label="Reiniciar" title="Reiniciar">↺</button>
+      </div>
+
+      <!-- Transport: ⏪10 | ▶ | ⏩10 -->
+      <div class="m-transport-row">
+        <button class="m-transport-btn m-skip-btn" id="m-btn-back10" aria-label="Retroceder 10 segundos">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12.5 8V4L6 9l6.5 5v-4A5.5 5.5 0 1 1 7 15.5"/></svg>
+          <span>10s</span>
+        </button>
+        <button class="m-transport-btn m-play-big" id="m-btn-play" aria-label="Play / Pausa">
+          <span id="m-play-icon">▶</span>
+        </button>
+        <button class="m-transport-btn m-skip-btn" id="m-btn-fwd10" aria-label="Adelantar 10 segundos">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M11.5 8V4L18 9l-6.5 5v-4A5.5 5.5 0 1 0 17 15.5"/></svg>
+          <span>10s</span>
+        </button>
+      </div>
+
+      <!-- Control de volumen -->
+      <div class="m-volume-row">
+        <span class="m-vol-label" aria-hidden="true">🔈</span>
+        <input type="range" id="m-vol-slider" min="0" max="1" step="0.02" value="1"
+               aria-label="Control de volumen">
+        <span class="m-vol-label" aria-hidden="true">🔊</span>
+        <span class="m-vol-value" id="m-vol-value">100%</span>
+      </div>
+
+      <!-- Botones de acción -->
+      <div class="m-btn-grid m-btn-grid-3">
+
+        <button class="m-btn m-btn-load" id="m-btn-load" aria-label="Cargar nueva imagen">
+          <span class="m-btn-icon" aria-hidden="true">🖼️</span>
+          Cargar imagen
+        </button>
+
+        <button class="m-btn m-btn-history" id="m-btn-next" aria-label="Ver historial">
+          <span class="m-btn-icon" aria-hidden="true">🕐</span>
+          Historial
+          <span class="m-history-badge hidden" id="m-history-badge"></span>
+        </button>
+
+        <button class="m-btn m-btn-new" id="m-btn-new" aria-label="Nueva Creación">
+          <span class="m-btn-icon" aria-hidden="true">✨</span>
+          Nueva Creación
+        </button>
+
+      </div>
+    </div><!-- /m-panel-player -->
+
+    <!-- ── PANEL: Tracklist (seleccionar imagen) ── -->
+    <div id="m-panel-tracklist" class="hidden">
+
+      <div class="m-subpanel-header">
+        <button class="m-back-btn" aria-label="Volver al control">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+          Volver
+        </button>
+        <h2 class="m-subpanel-title">🖼️ Seleccionar imagen</h2>
+      </div>
+
+      <!-- Grid de imágenes -->
+      <div class="m-tracklist-grid" id="m-tracklist-grid">
+        <!-- generado por JS -->
+      </div>
+
+      <!-- Footer con acciones (Cancelar / Abrir) — siempre visible -->
+      <div class="m-tracklist-footer" id="m-tracklist-footer">
+        <span class="m-selected-label" id="m-selected-label">Ninguna imagen seleccionada</span>
+        <div class="m-footer-btns">
+          <button class="m-footer-cancel" id="m-tracklist-cancel">Cancelar</button>
+          <button class="m-footer-open disabled" id="m-tracklist-open" disabled>Abrir</button>
+        </div>
+      </div>
+
+    </div><!-- /m-panel-tracklist -->
+
+    <!-- ── PANEL: Historial ── -->
+    <div id="m-panel-history" class="hidden">
+
+      <div class="m-subpanel-header">
+        <button class="m-back-btn" aria-label="Volver al control">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+          Volver
+        </button>
+        <h2 class="m-subpanel-title">🕐 Historial de creaciones</h2>
+      </div>
+
+      <div class="m-history-list" id="m-history-list">
+        <!-- generado por JS -->
+      </div>
+
+    </div><!-- /m-panel-history -->
+
+  </div><!-- /m-control -->
+
+</div><!-- /app-mobile -->
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     EXPLORADOR DE ARCHIVOS (modal simulado)
+════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay hidden" id="modal-files"
+     role="dialog" aria-modal="true" aria-label="Seleccionar imagen">
+  <div class="file-browser" role="document">
+
+    <div class="fb-titlebar">
+      <span class="fb-title-text">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <rect x="3" y="3" width="18" height="18" rx="2"/>
+          <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/>
+          <polyline points="21 15 16 10 5 21"/>
+        </svg>
+        Explorador · Seleccionar imagen
+      </span>
+      <button class="fb-close" id="fb-close" aria-label="Cerrar explorador">✕</button>
+    </div>
+
+    <div class="fb-address">
+      <input class="fb-addressbar" type="text"
+             value="SoundVision AI  ›  /img" readonly aria-label="Ruta actual">
+    </div>
+
+    <div class="fb-grid" id="fb-grid" role="listbox" aria-label="Imágenes disponibles" aria-multiselectable="false">
+      <!-- Generado por JavaScript -->
+    </div>
+
+    <div class="fb-footer">
+      <p class="fb-selected-name" id="fb-selected-name" aria-live="polite">Ningún archivo seleccionado</p>
+      <div class="fb-actions">
+        <button class="btn-secondary" id="fb-cancel">Cancelar</button>
+        <button class="btn-open" id="fb-open" disabled aria-label="Abrir imagen seleccionada">Abrir</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Elemento de audio oculto -->
+<audio id="audio-el" preload="auto"></audio>
+
+<!-- Scripts (orden importante) -->
+<!-- media-config.js es opcional: el servidor auto-detecta los archivos -->
+<script>
+  // Fallback silencioso si media-config.js no existe
+  window.TRACKS = window.TRACKS || [];
+</script>
+<script src="media-config.js" onerror="console.warn('[SV] media-config.js no encontrado, usando API automática')"></script>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>
