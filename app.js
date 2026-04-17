@@ -147,13 +147,17 @@ function generatePin() {
 function initDesktopPeer(peerId) {
   try {
     peer = new Peer(peerId, {
+      host: '0.peerjs.com',
+      port: 443,
+      secure: true,
       config: {
         iceServers: [
           { urls: 'stun:stun.l.google.com:19302' },
           { urls: 'stun:stun1.l.google.com:19302' },
+          { urls: 'stun:stun2.l.google.com:19302' }
         ],
       },
-      debug: 0,
+      debug: 1,
     });
 
     peer.on('open', () => console.log('[SV] Peer listo · ID:', peerId));
@@ -1121,15 +1125,19 @@ function mobileConnect() {
 
   try {
     peer = new Peer(undefined, {
+      host: '0.peerjs.com',
+      port: 443,
+      secure: true,
       config: { iceServers: [
         { urls: 'stun:stun.l.google.com:19302' },
         { urls: 'stun:stun1.l.google.com:19302' },
+        { urls: 'stun:stun2.l.google.com:19302' }
       ]},
-      debug: 0,
+      debug: 1,
     });
 
     peer.on('open', () => {
-      desktopConn = peer.connect(`sv-${rawPin}`, { reliable: true });
+      desktopConn = peer.connect(`sv-${rawPin}`);
 
       const timeout = setTimeout(() => {
         errEl.textContent = 'No se encontró la pantalla con ese PIN.';
