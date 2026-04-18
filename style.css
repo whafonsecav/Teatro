@@ -1,4 +1,4 @@
-/* ═══════════════════════════════════════════════════════════
+﻿/* ═══════════════════════════════════════════════════════════
    SOUNDVISION AI — Design System v3
    Arte y Estética · Politécnico Gran Colombiano
    ═══════════════════════════════════════════════════════════ */
@@ -99,12 +99,7 @@ img     { display: block; }
 
 /* ── App Containers ─────────────────────────────────────── */
 #app-desktop,
-#app-mobile {
-  position: relative; z-index: 1;
-  width: 100vw; height: 100vh;
-  display: flex; flex-direction: column;
-  overflow: hidden;
-}
+
 
 /* ── Top Bar ─────────────────────────────────────────────── */
 .topbar {
@@ -730,62 +725,7 @@ img     { display: block; }
 /* ═══════════════════════════════════════════════════════════
    VISTA MÓVIL — Control Remoto Completo
    ═══════════════════════════════════════════════════════════ */
-#app-mobile { 
-  background: var(--bg); 
-  overflow: hidden; 
-  position: absolute; 
-  inset: 0; 
-  display: flex; 
-  flex-direction: column;
-}
 
-/* ── Pantalla de emparejamiento ─────────────────────────── */
-#m-pairing {
-  flex: 1; display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  padding: 36px 24px; gap: 36px; text-align: center;
-}
-.m-logo { font-family: var(--font-h); font-size: 1.45rem; font-weight: 700; letter-spacing: -0.02em; }
-.m-logo em { font-style: normal; color: var(--primary-li); }
-
-.m-pair-card {
-  width: 100%; max-width: 340px;
-  background: var(--bg-glass); border: 1px solid var(--border-hi);
-  border-radius: var(--r-xl); padding: 32px 24px;
-  display: flex; flex-direction: column; align-items: center; gap: 18px;
-  backdrop-filter: blur(16px);
-}
-.m-pair-title { font-family: var(--font-h); font-size: 1.1rem; font-weight: 600; }
-.m-pair-sub { font-size: 0.85rem; color: var(--text-dim); line-height: 1.6; }
-
-.m-pin-input {
-  width: 100%; padding: 15px;
-  background: rgba(0,0,0,0.35); border: 2px solid var(--border-hi);
-  border-radius: var(--r-md); color: var(--text);
-  font-family: var(--font-h); font-size: 2rem; font-weight: 700;
-  text-align: center; letter-spacing: 0.35em; outline: none;
-  transition: border-color var(--t), box-shadow var(--t);
-  appearance: textfield; -moz-appearance: textfield;
-}
-.m-pin-input::-webkit-outer-spin-button,
-.m-pin-input::-webkit-inner-spin-button { appearance: none; -webkit-appearance: none; }
-.m-pin-input:focus { border-color: var(--primary); box-shadow: 0 0 22px var(--primary-glow); }
-
-.m-connect-btn {
-  width: 100%; padding: 15px;
-  background: linear-gradient(135deg, var(--primary), #5B21B6);
-  border-radius: var(--r-lg); font-family: var(--font-h);
-  font-size: 1rem; font-weight: 600; color: #fff;
-  box-shadow: 0 0 30px var(--primary-glow); transition: var(--t);
-}
-.m-connect-btn:hover:not(:disabled) { box-shadow: 0 0 50px var(--primary-glow); }
-.m-connect-btn:disabled { opacity: 0.55; pointer-events: none; }
-.m-error { font-size: 0.82rem; color: #FCA5A5; min-height: 18px; line-height: 1.5; }
-
-/* ── Panel de control (post-conexión) ───────────────────── */
-#m-control {
-  flex: 1; display: flex; flex-direction: column; overflow: hidden;
-}
 .m-ctrl-header {
   display: flex; align-items: center; justify-content: space-between;
   padding: 14px 18px 10px; flex-shrink: 0;
@@ -1133,3 +1073,5 @@ img     { display: block; }
   animation: pulse-dot 2s ease-in-out infinite;
 }
 
+
+#app-mobile { position: fixed; inset: 0; width: 100vw; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; background: var(--bg); z-index: 10; }

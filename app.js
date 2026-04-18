@@ -1,4 +1,4 @@
-﻿/* ═══════════════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════════
    SOUNDVISION AI — app.js v5
    Arte & Estética · Politécnico Gran Colombiano
    ─────────────────────────────────────────────────────────
@@ -43,7 +43,7 @@ const PEER_CONFIG = {
   config: {
     iceServers: [
       { urls: 'stun:stun.l.google.com:19302' },
-      { urls: 'stun:stun1.l.google.com:19302' },
+      { urls: 'stun:global.stun.twilio.com:3478' },
       { urls: 'turn:openrelay.metered.ca:80', username: 'openrelayproject', credential: 'openrelayproject' },
       { urls: 'turn:openrelay.metered.ca:443', username: 'openrelayproject', credential: 'openrelayproject' },
       { urls: 'turn:openrelay.metered.ca:443?transport=tcp', username: 'openrelayproject', credential: 'openrelayproject' }
@@ -131,7 +131,12 @@ function generatePin() {
   // Generar código QR oculto
   setTimeout(() => {
     if (typeof QRious !== 'undefined') {
-      const qrUrl = window.location.origin + window.location.pathname + '?pin=' + currentPin;
+      let baseUrl = window.location.origin + window.location.pathname;
+      if (window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        baseUrl = 'https://whafonsecav.github.io/Teatro/';
+      }
+      if (!baseUrl.endsWith('/')) baseUrl = baseUrl.replace(/\/index\.html$/, '/');
+      const qrUrl = baseUrl + (baseUrl.includes('?') ? '&' : '?') + 'pin=' + currentPin;
       new QRious({
         element: document.getElementById('qr-canvas'),
         value: qrUrl,
@@ -1133,7 +1138,7 @@ function mobileConnect() {
     peer = new Peer(undefined, PEER_CONFIG);
 
     peer.on('open', () => {
-      desktopConn = peer.connect(`sv-${rawPin}`);
+      desktopConn = peer.connect(`sv-${rawPin}`, { reliable: true });
 
       const timeout = setTimeout(() => {
         errEl.textContent = 'Tiempo agotado (las redes 4G pueden tardar más). Reintenta.';
@@ -1258,5 +1263,6 @@ function sendToDesktop(msg) {
    ═══════════════════════════════════════════════════════════ */
 loadMediaCatalog();
 detectAndInit();
+
 
 
