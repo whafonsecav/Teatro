@@ -120,6 +120,7 @@ function detectAndInit() {
    VISTA ESCRITORIO
    ═══════════════════════════════════════════════════════════ */
 function initDesktop() {
+  setupDesktopEvents();
   generatePin();
 }
 
