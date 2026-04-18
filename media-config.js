@@ -21,11 +21,15 @@ const IMAGE_FILES = [
   "03 - El Beso-Francesco Hayes (1859).jpg",
   "04 - La gran Odalisca-Jean Auguste (1814).jpg",
   "05 - The Blue Boy- Thomas Gainsborough (1770).jpg",
-  "09 - In the Face of Death Damien Hirst and the Thrill of Mortality.jpg",
-  "10 - Zdzislaw Beksinski Untitled.jpg",
-  "99 - Monalisa Marcel Duchamp.jpg",
-  "100 - Sin título (Calavera, 1982).jpg",
-  "101 - Ironia Policia Negro (1981).jpg",
+  "06 - El columpio (Fragonard).jpg",
+  "07- Dánae, Gustav Klimt (1907 - 1908 ).jpg",
+  "08 - L'Étoile, (La estrella )Edgar Degas  (1876 - 1878).jpg",
+  "09 - Monalisa Marcel Duchamp.jpg",
+  "10 - Sin título (Calavera, 1982).jpg",
+  "11 - Ironia Policia Negro (1981).jpg",
+  "12 - In the Face of Death Damien Hirst and the Thrill of Mortality.jpg",
+  "13 - Zdzislaw Beksinski Untitled.jpg",
+  "14 - Animal crucificado en vitrina – Damien Hirs.jpg",
   // ────────────────────────────────────────────────────────
 ];
 

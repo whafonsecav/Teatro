@@ -54,6 +54,7 @@ const PEER_CONFIG = {
 
 /* ── Audio & animación ──────────────────────────────────── */
 const audioEl  = document.getElementById('audio-el');
+let voiceoffEl = new Audio();
 let waveAnimId = null;
 let wavePhase  = 0;
 let procTimer  = null;
@@ -287,7 +288,7 @@ function handleCommandFromMobile(msg) {
       const track  = tracks[msg.trackIndex];
       if (track) {
         closeFileBrowser();
-        startProcessing(track);
+        openPreview(track);
       }
       break;
     }
@@ -347,6 +348,32 @@ function setupDesktopEvents() {
   $('btn-add').addEventListener('click', () => {
     closeHistoryDropdown();
     openFileBrowser();
+  });
+
+  const mainLogo = document.querySelector('.logo');
+  if (mainLogo) {
+    mainLogo.style.cursor = 'pointer';
+    mainLogo.addEventListener('click', () => {
+      audioEl.pause();
+      voiceoffEl.pause();
+      if (procTimer) clearInterval(procTimer);
+      transitionTo('idle');
+      syncStateToMobile();
+    });
+  }
+
+  $('btn-sirena').addEventListener('click', () => {
+    const s = new Audio('vozoff/sirena.mp3');
+    s.play().catch(e => console.warn('Sirena error:', e));
+  });
+
+  $('btn-start-process').addEventListener('click', () => {
+    voiceoffEl.pause();
+    startProcessing(currentTrack);
+  });
+
+  $('btn-listen').addEventListener('click', () => {
+    launchPlayer(currentTrack);
   });
 
   // QR Modal
@@ -512,7 +539,7 @@ function confirmAndOpenFile() {
   if (selectedTrackIndex < 0) return;
   const track = getTracklist()[selectedTrackIndex];
   closeFileBrowser();
-  startProcessing(track);
+  openPreview(track);
 }
 
 function closeFileBrowser() {
@@ -531,8 +558,23 @@ document.addEventListener('keydown', e => {
 });
 
 /* ──────────────────────────────────────────────────────────
-   Procesamiento (simulación IA — 5 segundos)
+   Previsualización y Procesamiento
    ────────────────────────────────────────────────────────── */
+function openPreview(track) {
+  if (procTimer) clearInterval(procTimer);
+  currentTrack = track;
+  transitionTo('preview');
+  syncStateToMobile();
+
+  $('preview-img').src = `img/${track.image}`;
+  $('preview-title').textContent = track.title;
+
+  const nameWithoutExt = track.image.replace(/\.[^.]+$/, '');
+  voiceoffEl.pause();
+  voiceoffEl = new Audio(`vozoff/${nameWithoutExt}.mp3`);
+  voiceoffEl.play().catch(e => console.warn('Voiceoff blocked:', e));
+}
+
 function startProcessing(track) {
   if (procTimer) clearInterval(procTimer);
   currentTrack = track;
@@ -540,6 +582,7 @@ function startProcessing(track) {
   syncStateToMobile();
 
   $('process-img').src = `img/${track.image}`;
+  $('process-done-action').classList.add('hidden');
 
   $('process-steps').innerHTML = PROCESSING_STEPS.map((text, i) => `
     <div class="step-item" id="pstep-${i}" role="listitem">
@@ -572,7 +615,7 @@ function startProcessing(track) {
       clearInterval(procTimer);
       markStep(activeStep, 'done');
       $('progress-fill').style.width = '100%';
-      setTimeout(() => launchPlayer(track), 450);
+      $('process-done-action').classList.remove('hidden');
     }
   }, TICK);
 }
