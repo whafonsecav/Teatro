@@ -1133,3 +1133,6 @@ img     { display: block; }
   animation: pulse-dot 2s ease-in-out infinite;
 }
 
+
+#app-mobile { position: fixed; inset: 0; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; background: var(--bg); z-index: 10; }
+
