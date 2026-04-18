@@ -1160,11 +1160,11 @@ function mobileConnect() {
       desktopConn = peer.connect(`sv-${rawPin}`);
 
       const timeout = setTimeout(() => {
-        errEl.textContent = 'No se encontró la pantalla con ese PIN.';
+        errEl.textContent = 'Tiempo agotado (las redes 4G pueden tardar más). Reintenta.';
         connectBtn.disabled    = false;
         connectBtn.textContent = 'Conectar';
         if (peer) { peer.destroy(); peer = null; }
-      }, 12000);
+      }, 30000);
 
       desktopConn.on('open', () => { clearTimeout(timeout); showMobileControlPanel(); });
       desktopConn.on('data', handleDataFromDesktop);
