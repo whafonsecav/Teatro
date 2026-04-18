@@ -36,6 +36,22 @@ let remoteConn  = null;
 let desktopConn = null;
 let currentPin  = '';
 
+const PEER_CONFIG = {
+  host: '0.peerjs.com',
+  port: 443,
+  secure: true,
+  config: {
+    iceServers: [
+      { urls: 'stun:stun.l.google.com:19302' },
+      { urls: 'stun:stun1.l.google.com:19302' },
+      { urls: 'turn:openrelay.metered.ca:80', username: 'openrelayproject', credential: 'openrelayproject' },
+      { urls: 'turn:openrelay.metered.ca:443', username: 'openrelayproject', credential: 'openrelayproject' },
+      { urls: 'turn:openrelay.metered.ca:443?transport=tcp', username: 'openrelayproject', credential: 'openrelayproject' }
+    ]
+  },
+  debug: 2
+};
+
 /* ── Audio & animación ──────────────────────────────────── */
 const audioEl  = document.getElementById('audio-el');
 let waveAnimId = null;
@@ -102,42 +118,10 @@ function detectAndInit() {
 
 /* ═══════════════════════════════════════════════════════════
    VISTA ESCRITORIO
-   ═══════════════════════════════════════════════════════════ */
-function initDesktop() {
-  setupDesktopEvents();
-  unlockAudioOnFirstGesture();
+   ═══�function initDesktop() {
   generatePin();
 }
 
-/* ── Desbloqueo de audio en primer gesto del usuario ─────── */
-/* El navegador bloquea audioEl.play() hasta que haya un gesto
-   del usuario en la página. Esta función lo desbloquea de forma
-   silenciosa al primer clic o tecla, para que luego el móvil
-   pueda controlar la reproducción sin restricciones. */
-function unlockAudioOnFirstGesture() {
-  const unlock = () => {
-    // Crea un AudioContext vacío y lo cierra: esto "desbloquea"
-    // el contexto de audio del navegador para reproducción
-    // programática posterior (incluyendo comandos del móvil).
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    ctx.resume().then(() => ctx.close()).catch(() => {});
-    // También hace un play+pause silencioso en el propio elemento
-    const prevSrc = audioEl.src;
-    if (!prevSrc || prevSrc === window.location.href) {
-      // Sin audio cargado aún: solo desbloquea el contexto
-    } else {
-      audioEl.play().then(() => audioEl.pause()).catch(() => {});
-    }
-    document.removeEventListener('click',   unlock, true);
-    document.removeEventListener('keydown', unlock, true);
-    document.removeEventListener('touchstart', unlock, true);
-  };
-  document.addEventListener('click',      unlock, { capture: true, once: true });
-  document.addEventListener('keydown',    unlock, { capture: true, once: true });
-  document.addEventListener('touchstart', unlock, { capture: true, once: true });
-}
-
-/* ── PIN y PeerJS ───────────────────────────────────────── */
 function generatePin() {
   currentPin = String(Math.floor(100000 + Math.random() * 900000));
   $('pin-display').textContent = currentPin;
@@ -160,32 +144,7 @@ function generatePin() {
 
 function initDesktopPeer(peerId) {
   try {
-    peer = new Peer(peerId, {
-      host: '0.peerjs.com',
-      port: 443,
-      secure: true,
-      config: {
-        iceServers: [
-          { urls: 'stun:stun.l.google.com:19302' },
-          {
-            urls: 'turn:openrelay.metered.ca:80',
-            username: 'openrelayproject',
-            credential: 'openrelayproject'
-          },
-          {
-            urls: 'turn:openrelay.metered.ca:443',
-            username: 'openrelayproject',
-            credential: 'openrelayproject'
-          },
-          {
-            urls: 'turn:openrelay.metered.ca:443?transport=tcp',
-            username: 'openrelayproject',
-            credential: 'openrelayproject'
-          }
-        ]
-      },
-      debug: 1,
-    });
+    peer = new Peer(peerId, PEER_CONFIG);
 
     peer.on('open', () => console.log('[SV] Peer listo · ID:', peerId));
 
@@ -206,9 +165,7 @@ function initDesktopPeer(peerId) {
     peer.on('error', (err) => {
       if (err.type === 'unavailable-id') {
         peer.destroy();
-        currentPin = String(Math.floor(100000 + Math.random() * 900000));
-        $('pin-display').textContent = currentPin;
-        initDesktopPeer(`sv-${currentPin}`);
+        generatePin();
       }
     });
   } catch (e) {
@@ -1172,32 +1129,7 @@ function mobileConnect() {
   connectBtn.textContent = 'Conectando…';
 
   try {
-    peer = new Peer(undefined, {
-      host: '0.peerjs.com',
-      port: 443,
-      secure: true,
-      config: {
-        iceServers: [
-          { urls: 'stun:stun.l.google.com:19302' },
-          {
-            urls: 'turn:openrelay.metered.ca:80',
-            username: 'openrelayproject',
-            credential: 'openrelayproject'
-          },
-          {
-            urls: 'turn:openrelay.metered.ca:443',
-            username: 'openrelayproject',
-            credential: 'openrelayproject'
-          },
-          {
-            urls: 'turn:openrelay.metered.ca:443?transport=tcp',
-            username: 'openrelayproject',
-            credential: 'openrelayproject'
-          }
-        ]
-      },
-      debug: 1,
-    });
+    peer = new Peer(undefined, PEER_CONFIG);
 
     peer.on('open', () => {
       desktopConn = peer.connect(`sv-${rawPin}`);
@@ -1325,3 +1257,4 @@ function sendToDesktop(msg) {
    ═══════════════════════════════════════════════════════════ */
 loadMediaCatalog();
 detectAndInit();
+

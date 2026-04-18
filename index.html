@@ -398,12 +398,13 @@
 
 <!-- Scripts (orden importante) -->
 <!-- media-config.js es opcional: el servidor auto-detecta los archivos -->
+<!-- Media config -->
 <script>
-  // Fallback silencioso si media-config.js no existe
   window.TRACKS = window.TRACKS || [];
 </script>
 <script src="media-config.js" onerror="console.warn('[SV] media-config.js no encontrado, usando API automática')"></script>
-<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<!-- Reemplazo de PeerJS por MQTT.js para atravesar 4G de Carrier (CGNAT) usando WebSockets nativos HTTPS -->
+<script src="https://unpkg.com/mqtt@5.3.6/dist/mqtt.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
 <script src="app.js"></script>
 
