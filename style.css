@@ -201,6 +201,10 @@ img     { display: block; }
   border-radius: var(--r-full);
   font-family: var(--font-h); font-size: 0.82rem; font-weight: 500;
   backdrop-filter: blur(12px); transition: var(--t);
+  cursor: pointer;
+}
+.pairing-badge:hover {
+  background: var(--bg-glass-hi); box-shadow: 0 0 15px var(--primary-glow); border-color: var(--primary-li);
 }
 .badge-dot {
   width: 7px; height: 7px; border-radius: 50%;
@@ -636,6 +640,16 @@ img     { display: block; }
 @keyframes slide-up {
   from { transform: translateY(24px); opacity: 0; }
   to   { transform: translateY(0);    opacity: 1; }
+}
+
+.qr-browser {
+  width: min(440px, 94vw);
+  background: #0B0916;
+  border: 1px solid var(--border-hi);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow), 0 0 90px rgba(236,72,153,0.18);
+  overflow: hidden;
+  animation: slide-up 0.3s var(--t-slow);
 }
 .fb-titlebar {
   display: flex; align-items: center; justify-content: space-between;

@@ -142,6 +142,20 @@ function generatePin() {
   currentPin = String(Math.floor(100000 + Math.random() * 900000));
   $('pin-display').textContent = currentPin;
   initDesktopPeer(`sv-${currentPin}`);
+
+  // Generar código QR oculto
+  setTimeout(() => {
+    if (typeof QRious !== 'undefined') {
+      const qrUrl = window.location.origin + window.location.pathname + '?pin=' + currentPin;
+      new QRious({
+        element: document.getElementById('qr-canvas'),
+        value: qrUrl,
+        size: 200,
+        level: 'H'
+      });
+      $('qr-pin-display').textContent = currentPin;
+    }
+  }, 1000);
 }
 
 function initDesktopPeer(peerId) {
@@ -367,6 +381,19 @@ function setupDesktopEvents() {
     closeHistoryDropdown();
     openFileBrowser();
   });
+
+  // QR Modal
+  $('pairing-badge').addEventListener('click', () => {
+    const qrModal = $('modal-qr');
+    if (qrModal) {
+      qrModal.classList.remove('hidden');
+      qrModal.querySelector('.qr-browser').style.animation = 'slide-up 0.3s var(--t-slow)';
+    }
+  });
+  const qrCloseBtn = $('qr-close');
+  if (qrCloseBtn) {
+    qrCloseBtn.addEventListener('click', () => $('modal-qr').classList.add('hidden'));
+  }
 
   /* Skip ±10s */
   $('btn-back10').addEventListener('click', () => {
@@ -808,6 +835,14 @@ function initMobile() {
     if (e.key === 'Enter') mobileConnect();
   });
   $('m-disconnect-btn').addEventListener('click', mobileDisconnect);
+
+  // Auto-llenado por QR
+  const urlParams = new URLSearchParams(window.location.search);
+  const qrPin = urlParams.get('pin');
+  if (qrPin && qrPin.length === 6) {
+    $('m-pin-input').value = qrPin;
+    setTimeout(() => mobileConnect(), 500);
+  }
 
   /* Play / Pausa */
   $('m-btn-play').addEventListener('click', () => {

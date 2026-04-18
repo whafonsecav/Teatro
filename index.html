@@ -373,6 +373,26 @@
   </div>
 </div>
 
+<!-- Modal QR Code -->
+<div class="modal-overlay hidden" id="modal-qr" role="dialog" aria-modal="true" aria-label="Código QR de conexión">
+  <div class="qr-browser" role="document">
+    <div class="fb-titlebar">
+      <span class="fb-title-text">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+        Conectar vía QR
+      </span>
+      <button class="fb-close" id="qr-close" aria-label="Cerrar modal QR">✕</button>
+    </div>
+    <div class="qr-content" style="text-align: center; padding: 30px;">
+      <p style="margin-bottom: 20px; font-size: 0.95rem; color: var(--text-dim);">Escanea este código con tu celular para conectarte instantáneamente sin escribir el PIN.</p>
+      <div style="background: white; padding: 15px; border-radius: 12px; display: inline-block;">
+        <canvas id="qr-canvas"></canvas>
+      </div>
+      <p style="margin-top: 20px; font-size: 1.2rem; font-weight: bold; letter-spacing: 0.2em; color: var(--primary-li);" id="qr-pin-display">xxxxxx</p>
+    </div>
+  </div>
+</div>
+
 <!-- Elemento de audio oculto -->
 <audio id="audio-el" preload="auto"></audio>
 
@@ -384,6 +404,7 @@
 </script>
 <script src="media-config.js" onerror="console.warn('[SV] media-config.js no encontrado, usando API automática')"></script>
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
 <script src="app.js"></script>
 
 </body>
